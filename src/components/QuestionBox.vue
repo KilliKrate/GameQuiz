@@ -8,17 +8,13 @@
         <b-list-group-item
           v-for="(answer, index) in shuffledAnswers"
           :key="answer"
-          @click="selectAnswer(index)"
+          @click="submitAnswer(index)"
           :class="answerClass(index)"
         >{{decodeHTML(answer)}}</b-list-group-item>
       </b-list-group>
-      <b-button
-        variant="primary"
-        @click="submitAnswer()"
-        class="mx-2"
-        :disabled="selectedIndex === null || answered"
-      >Submit</b-button>
-      <b-button variant="success" class="mx-2" @click="next">Next</b-button>
+      <transition name="slide-fade">
+        <b-button v-if="answered" variant="success" class="mx-2" @click="next">Next</b-button>
+      </transition>
     </b-jumbotron>
   </div>
 </template>
@@ -41,24 +37,20 @@ export default {
     };
   },
   methods: {
-    selectAnswer(index) {
+    submitAnswer(index) {
       if (!this.answered) {
         this.selectedIndex = index;
+        let isCorrect = false;
+        if (index === this.correctIndex) {
+          isCorrect = true;
+        }
+        this.answered = true;
+        this.increment(isCorrect);
       }
-    },
-    submitAnswer() {
-      let isCorrect = false;
-      if (this.selectedIndex === this.correctIndex) {
-        isCorrect = true;
-      }
-      this.answered = true;
-      this.increment(isCorrect);
     },
     answerClass(index) {
       let answerClass = "";
-      if (!this.answered && this.selectedIndex === index) {
-        answerClass = "selected";
-      } else if (this.answered && this.correctIndex === index) {
+      if (this.answered && this.correctIndex === index) {
         answerClass = "correct";
       } else if (this.answered && this.selectedIndex === index) {
         answerClass = "incorrect";
@@ -112,5 +104,17 @@ export default {
 
 .incorrect {
   background: red !important;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>
