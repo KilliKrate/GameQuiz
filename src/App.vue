@@ -1,10 +1,15 @@
 <template>
   <div id="app">
-    <Header />
+    <Header :numCorrect="numCorrect" :numTotal="numTotal" />
     <b-container class="bv-example-row">
       <b-row class="justify-content-md-center">
         <b-col lg="6">
-          <QuestionBox v-if="questions.length" :currentQuestion="questions[index]" :next="next" />
+          <QuestionBox
+            v-if="questions.length"
+            :currentQuestion="questions[index]"
+            :next="next"
+            :increment="increment"
+          />
         </b-col>
       </b-row>
     </b-container>
@@ -25,19 +30,26 @@ export default {
   data() {
     return {
       questions: [],
-      index: 0
+      index: 0,
+      numCorrect: 0,
+      numTotal: 0
     };
   },
   methods: {
     next() {
       this.index++;
+    },
+    increment(isCorrect) {
+      if (isCorrect) {
+        this.numCorrect++;
+      }
+      this.numTotal++;
     }
   },
   mounted: function() {
     axios
       .get("https://opentdb.com/api.php?amount=10&category=15&type=multiple")
       .then(response => {
-        console.log(response);
         this.questions = response.data.results;
       });
   }
