@@ -1,7 +1,7 @@
 <template>
   <div class="question-box-container">
     <b-jumbotron>
-      <template v-slot:lead>{{currentQuestion.question}}</template>
+      <template v-slot:lead>{{decodeHTML(currentQuestion.question)}}</template>
 
       <hr class="my-4" />
       <b-list-group class="mb-4">
@@ -10,7 +10,7 @@
           :key="answer"
           @click="selectAnswer(index)"
           :class="answerClass(index)"
-        >{{answer}}</b-list-group-item>
+        >{{decodeHTML(answer)}}</b-list-group-item>
       </b-list-group>
       <b-button
         variant="primary"
@@ -64,6 +64,11 @@ export default {
         answerClass = "incorrect";
       }
       return answerClass;
+    },
+    decodeHTML(html) {
+      let txt = document.createElement("textarea");
+      txt.innerHTML = html;
+      return txt.value;
     }
   },
   computed: {
