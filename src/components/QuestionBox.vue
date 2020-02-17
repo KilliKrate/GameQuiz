@@ -13,7 +13,7 @@
         >{{decodeHTML(answer)}}</b-list-group-item>
       </b-list-group>
       <transition name="slide-fade">
-        <b-button v-if="answered" variant="success" class="mx-2" @click="next">Next</b-button>
+        <b-button v-if="answered" variant="success" class="mx-2" @click="nextQuestion">Next</b-button>
       </transition>
     </b-jumbotron>
   </div>
@@ -61,6 +61,11 @@ export default {
       let txt = document.createElement("textarea");
       txt.innerHTML = html;
       return txt.value;
+    },
+    nextQuestion() {
+      if (this.answered) {
+        this.next()
+      }
     }
   },
   computed: {
